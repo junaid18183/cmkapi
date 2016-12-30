@@ -1,11 +1,12 @@
 package cmkapi
 
-import (
+/*import (
     "fmt"
     "io/ioutil"
     "log"
     "net/http"
-)
+)*/
+import ( "net/http" )
 
 type Session struct {
         Username           string
@@ -20,7 +21,7 @@ func NewSession(username, password, url string,allowUnverifiedSSL bool) (*Sessio
         return &Session{username, password, url,allowUnverifiedSSL, nil}, nil
 }
 
-func (session *Session) Connect() error {
+/*func (session *Session) Connect() error {
 	var body []byte
 	var response *http.Response
 	var request *http.Request
@@ -36,3 +37,4 @@ func (session *Session) Connect() error {
     	}
 	return nil
 }
+*/

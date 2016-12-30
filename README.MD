@@ -13,10 +13,11 @@ func main() {
         // account credentials and url to connect to grafana
         user := "autouser"
         pass := "UPFKWAJJDPJWTOQMOWHY"
-        url := "http://192.168.99.100:32768/mva/check_mk/webapi.py"
-        session,error := cmkapi.NewSession(user,pass,url,true)
+        host := "192.168.99.100:32768"
+        sitename := "mva"
+        client,error := cmkapi.NewClient(user,pass,host,sitename)
         if error == nil {
-                session.GetHosts()
+                client.ReadHost()
                 //fmt.Println("Done")
         }
 }

@@ -33,11 +33,7 @@ func (c *Client) CreateHost(h *Host) error {
 
 
 func (c *Client) ReadALLHost() error {
-	baseurl := "http://" + c.Host + "/" + c.Sitename + "/check_mk/webapi.py"
-	action := "?action=get_all_hosts"
-	//action := "?action=get_host"
-	credentails := "&_username=" + c.User + "&_secret=" + c.Password
-	fullurl := baseurl + action + credentails 
+	fullurl:= c.APIURL("get_all_hosts") 
 
 	request, err := http.NewRequest("GET", fullurl, nil)
 	if err == nil {
@@ -62,14 +58,11 @@ func (c *Client) ReadALLHost() error {
 }
 
 func (c *Client) ReadHost(host string) error {
-	baseurl := "http://" + c.Host + "/" + c.Sitename + "/check_mk/webapi.py"
-	action := "?action=get_host"
-	credentails := "&_username=" + c.User + "&_secret=" + c.Password
-	fullurl := baseurl + action + credentails
+        fullurl:= c.APIURL("get_host")
 	s := "request={\"hostname\": \"" + host + "\"}"
-	search := strings.NewReader(s)
-	request, err := http.NewRequest("POST",fullurl,search)
-	if err == nil {
+        search := strings.NewReader(s)
+        request, err := http.NewRequest("POST",fullurl,search)
+        if err == nil {
                 request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
                 response, err1 := (&http.Client{}).Do(request)
                 if err1 == nil {
@@ -89,5 +82,6 @@ func (c *Client) ReadHost(host string) error {
         }
         return nil
 
-	
+
 }
+

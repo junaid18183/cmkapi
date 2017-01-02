@@ -8,12 +8,16 @@ import (
 )
 
 type Host struct {
+	Attributes
         Hostname string
         Folder   string
-        Alias    string
-        TAG_Agent string
-        TAG_criticality string
-        IPADDRESS string
+}
+
+type Attributes struct {
+	Alias string
+	Agent string
+	IPADDRESS string
+	Criticality string
 }
 
 
@@ -29,9 +33,6 @@ func (c *Client) CreateHost(h *Host) error {
 
 func (c *Client) ReadHost() error {
 //func (c *Client) ReadHost(h Host) error {
-//	var body []byte
-//	var response *http.Response
-//	var request *http.Request
 	baseurl := "http://" + c.Host + "/" + c.Sitename + "/check_mk/webapi.py"
 	action := "?action=get_all_hosts"
 	//action := "?action=get_host"

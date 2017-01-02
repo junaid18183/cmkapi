@@ -3,9 +3,6 @@ package cmkapi
 import (
     "fmt"
     "strings"
-    "io/ioutil"
-    "log"
-    "net/http"
     "encoding/json"
 )
 
@@ -58,13 +55,42 @@ func (c *Client) ReadHost(host string) error {
 }
 //#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) DeleteHost(host string) error {
+	var result StructPutResult
         s := "request={\"hostname\": \"" + host + "\"}"
         body := strings.NewReader(s)
 	resp_body, resp_err := c.NewAPIRequest("POST","delete_host",body)
-        if resp_err != nil {
-		return resp_err
+	if resp_err == nil {
+		err := json.Unmarshal(resp_body, &result)
+		if err == nil {
+			resp_code := result.ResultCode
+			if resp_code == 0 {
+				//Delete is sucssfull , now Call activate_changes
+				status:=c.ActivateChanges()
+				if status == nil {
+					fmt.Printf("%s is Deleted Successfully",host)
+				}
+				return nil
+        		}
+		} 
+		return err  
 	}
-	fmt.Printf("%s",resp_body)
-        return nil
+	return resp_err
+}
+//#-------------------------------------------------------------------------------------------------------------------------------------------
+func (c *Client) ActivateChanges() error {
+	var result StructPutResult
+	resp_body, resp_err := c.NewAPIRequest("POST","activate_changes",nil)
+        if resp_err == nil {
+                err := json.Unmarshal(resp_body, &result)
+                if err == nil {
+                        resp_code := result.ResultCode
+                        if resp_code == 0 {
+                                // now Call activate_changes is successfull
+                                return nil
+                        }
+                }
+                return err
+        }
+        return resp_err
 }
 //#-------------------------------------------------------------------------------------------------------------------------------------------

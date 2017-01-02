@@ -16,9 +16,12 @@ func main() {
         host := "192.168.99.100:32768"
         sitename := "mva"
         client,error := cmkapi.NewClient(user,pass,host,sitename)
+
         if error == nil {
-                client.ReadHost()
-                //fmt.Println("Done")
+                //client.ReadHost("winxp_1")
+                client.ReadALLHost1()
+                //client.DeleteHost("winxp_1")
+
         }
 }
 

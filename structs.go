@@ -32,3 +32,9 @@ type StructGetHostResult struct {
 	} `json:"result"`
 	ResultCode int `json:"result_code"`
 }
+
+
+type StructPutResult struct {
+	Result string `json:"result"`
+	ResultCode int `json:"result_code"`
+}

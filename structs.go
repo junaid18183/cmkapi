@@ -1,6 +1,6 @@
 package cmkapi
 
-type GetHostResult struct {
+type StructGetHostResult struct {
 	Result struct {
 		Attributes struct {
 			NetworkScan struct {

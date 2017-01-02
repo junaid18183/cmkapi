@@ -31,75 +31,40 @@ func (c *Client) CreateHost(h *Host) error {
         return nil
 }
 
-
-
+//#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) ReadALLHost() error {
-	fullurl:= c.APIURL("get_all_hosts") 
-
-	request, err := http.NewRequest("GET", fullurl, nil)
-	if err == nil {
-                request.Header.Add("Content-Type", "application/json")
-                response, err1 := (&http.Client{}).Do(request)
-		if err1 == nil {
-                	defer response.Body.Close()
-                	body, err2 := ioutil.ReadAll(response.Body)
-			if err2 == nil {
-                		fmt.Printf("%s", body)
-			} else {
-			log.Fatalf("ERROR: %s", err2)
-			}
-		} else { 
-		log.Fatalf("ERROR: %s", err1)
+	resp_body, resp_err := c.NewAPIRequest("GET","get_all_hosts",nil)
+	if resp_err != nil {
+        	return resp_err
         }
-		
-        } else {
-                log.Fatalf("ERROR: %s", err)
-        }
-	return nil
-}
-
-func (c *Client) ReadHost(host string) error {
-	var hostdetail GetHostResult
-        fullurl:= c.APIURL("get_host")
-	s := "request={\"hostname\": \"" + host + "\"}"
-        search := strings.NewReader(s)
-        request, err := http.NewRequest("POST",fullurl,search)
-        if err == nil {
-                request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-                response, doerr := (&http.Client{}).Do(request)
-                if doerr == nil {
-                        defer response.Body.Close()
-                        body, err2 := ioutil.ReadAll(response.Body)
-                        if err2 == nil {
-                                //fmt.Printf("%s", body)
-				err := json.Unmarshal(body, &hostdetail)
-				if err == nil {
-                                fmt.Printf("%s", hostdetail.Result.Hostname)
-				}
-				
-                        } else {
-                        log.Fatalf("ERROR: %s", err2)
-                        }
-                } else {
-                log.Fatalf("ERROR: %s", doerr)
-        }
-
-        } else {
-                log.Fatalf("ERROR: %s", err)
-        }
+        fmt.Printf("%s",resp_body)
         return nil
 
-
 }
-
-
+//#-------------------------------------------------------------------------------------------------------------------------------------------
+func (c *Client) ReadHost(host string) error {
+        var hostdetail StructGetHostResult
+        s := "request={\"hostname\": \"" + host + "\"}"
+        body := strings.NewReader(s)
+	resp_body, resp_err := c.NewAPIRequest("POST","get_host",body)
+	if resp_err != nil {
+		return resp_err
+	}
+	err := json.Unmarshal(resp_body, &hostdetail)
+        if err == nil {
+        fmt.Printf("%s", hostdetail.Result.Hostname)
+        }
+        return nil
+}
+//#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) DeleteHost(host string) error {
         s := "request={\"hostname\": \"" + host + "\"}"
         body := strings.NewReader(s)
 	resp_body, resp_err := c.NewAPIRequest("POST","delete_host",body)
-        if resp_err == nil {
-		fmt.Printf("%s",resp_body)
-        }
+        if resp_err != nil {
+		return resp_err
+	}
+	fmt.Printf("%s",resp_body)
         return nil
 }
-
+//#-------------------------------------------------------------------------------------------------------------------------------------------

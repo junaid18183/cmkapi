@@ -6,6 +6,7 @@ import (
     "io/ioutil"
     "log"
     "net/http"
+    "encoding/json"
 )
 
 type Host struct {
@@ -58,23 +59,29 @@ func (c *Client) ReadALLHost() error {
 }
 
 func (c *Client) ReadHost(host string) error {
+	var hostdetail GetHostResult
         fullurl:= c.APIURL("get_host")
 	s := "request={\"hostname\": \"" + host + "\"}"
         search := strings.NewReader(s)
         request, err := http.NewRequest("POST",fullurl,search)
         if err == nil {
                 request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-                response, err1 := (&http.Client{}).Do(request)
-                if err1 == nil {
+                response, doerr := (&http.Client{}).Do(request)
+                if doerr == nil {
                         defer response.Body.Close()
                         body, err2 := ioutil.ReadAll(response.Body)
                         if err2 == nil {
-                                fmt.Printf("%s", body)
+                                //fmt.Printf("%s", body)
+				err := json.Unmarshal(body, &hostdetail)
+				if err == nil {
+                                fmt.Printf("%s", hostdetail.Result.Hostname)
+				}
+				
                         } else {
                         log.Fatalf("ERROR: %s", err2)
                         }
                 } else {
-                log.Fatalf("ERROR: %s", err1)
+                log.Fatalf("ERROR: %s", doerr)
         }
 
         } else {

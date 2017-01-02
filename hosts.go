@@ -92,3 +92,25 @@ func (c *Client) ReadHost(host string) error {
 
 }
 
+func (c *Client) DeleteHost(host string) error {
+        fullurl:= c.APIURL("delete_host")
+        s := "request={\"hostname\": \"" + host + "\"}"
+        body := strings.NewReader(s)
+        request, request_err := http.NewRequest("POST",fullurl,body)
+	if request_err != nil {
+		log.Fatalf("ERROR: %s", request_err) 
+	}
+
+	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	response, do_err := (&http.Client{}).Do(request)
+	if do_err != nil {
+		log.Fatalf("ERROR: %s", do_err)
+	}
+	defer response.Body.Close()
+	resp_body, err := ioutil.ReadAll(response.Body)
+	fmt.Printf("%s -  %s", resp_body, err)
+        return nil
+
+}
+

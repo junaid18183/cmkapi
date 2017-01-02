@@ -2,6 +2,7 @@ package cmkapi
 
 import (
     "fmt"
+    "strings"
     "io/ioutil"
     "log"
     "net/http"
@@ -31,8 +32,7 @@ func (c *Client) CreateHost(h *Host) error {
 
 
 
-func (c *Client) ReadHost() error {
-//func (c *Client) ReadHost(h Host) error {
+func (c *Client) ReadALLHost() error {
 	baseurl := "http://" + c.Host + "/" + c.Sitename + "/check_mk/webapi.py"
 	action := "?action=get_all_hosts"
 	//action := "?action=get_host"
@@ -59,4 +59,35 @@ func (c *Client) ReadHost() error {
                 log.Fatalf("ERROR: %s", err)
         }
 	return nil
+}
+
+func (c *Client) ReadHost(host string) error {
+	baseurl := "http://" + c.Host + "/" + c.Sitename + "/check_mk/webapi.py"
+	action := "?action=get_host"
+	credentails := "&_username=" + c.User + "&_secret=" + c.Password
+	fullurl := baseurl + action + credentails
+	s := "request={\"hostname\": \"" + host + "\"}"
+	search := strings.NewReader(s)
+	request, err := http.NewRequest("POST",fullurl,search)
+	if err == nil {
+                request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+                response, err1 := (&http.Client{}).Do(request)
+                if err1 == nil {
+                        defer response.Body.Close()
+                        body, err2 := ioutil.ReadAll(response.Body)
+                        if err2 == nil {
+                                fmt.Printf("%s", body)
+                        } else {
+                        log.Fatalf("ERROR: %s", err2)
+                        }
+                } else {
+                log.Fatalf("ERROR: %s", err1)
+        }
+
+        } else {
+                log.Fatalf("ERROR: %s", err)
+        }
+        return nil
+
+	
 }

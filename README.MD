@@ -18,9 +18,10 @@ func main() {
         client,error := cmkapi.NewClient(user,pass,host,sitename)
 
         if error == nil {
-                //client.ReadHost("winxp_1")
-                client.ReadALLHost1()
-                //client.DeleteHost("winxp_1")
+                //client.CreateHost("HostName", "Folder","Alias of host", "Agent-Type{cmk-agent,snmp-only,snmp-v1,snmp-tcp,ping}","Criticality-Tag{prod,critical,test,offline}","IP Address")
+                client.CreateHost("winxp_1", "os/windows","Alias of winxp_1", "cmk-agent","prod","127.0.0.1")
+                client.ReadHost("winxp_1")
+                client.DeleteHost("winxp_1")
 
         }
 }

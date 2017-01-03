@@ -7,10 +7,6 @@ import (
     "errors"
 )
 //#-------------------------------------------------------------------------------------------------------------------------------------------
-func (h *Host) Id() string {
-        return "id-" + h.Hostname + "!"
-}
-//#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) CreateHost(hostname, folder, alias,tag_agent,tag_criticality,ipaddress string) error {
 	var result StructPutResult
 	host := &Host{Attributes {alias,tag_agent,tag_criticality,ipaddress},hostname, folder }
@@ -55,22 +51,29 @@ func (c *Client) ReadALLHost() error {
         return nil
 }
 //#-------------------------------------------------------------------------------------------------------------------------------------------
-func (c *Client) ReadHost(host string) error {
+func (c *Client) ReadHost(host string) (*Host,error) {
         var hostdetail StructGetHostResult
 	s := "request={\"hostname\": \"" + host + "\"}"
         body := strings.NewReader(s)
         resp_body, resp_err := c.NewAPIRequest("POST","get_host",body)
         if resp_err != nil {
                 fmt.Printf("API Request for get_host failed. Error: %s\n", resp_err)
-                return resp_err
+                return nil,resp_err
         }
         resp_unmarshal_err := json.Unmarshal(resp_body, &hostdetail)
         if resp_unmarshal_err != nil {
                 fmt.Printf("Error Decoding the API response. Error: %s\n", resp_unmarshal_err)
-                return resp_unmarshal_err
+                return nil,resp_unmarshal_err
         }
-        fmt.Printf("%s \n", hostdetail.Result.Hostname)
-        return nil
+	hostname := hostdetail.Result.Hostname
+ 	folder := hostdetail.Result.Path
+	alias := hostdetail.Result.Attributes.Alias
+	tag_agent := hostdetail.Result.Attributes.TagAgent
+	tag_criticality := hostdetail.Result.Attributes.TagCriticality
+	ipaddress := hostdetail.Result.Attributes.Ipaddress
+	hoststruct := &Host{Attributes {alias,tag_agent,tag_criticality,ipaddress},hostname, folder }
+	fmt.Printf("Host %s is Available in Check_MK.\n",hostname)
+        return hoststruct,nil
 }
 //#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) DeleteHost(host string) error {

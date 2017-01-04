@@ -1,6 +1,15 @@
-This is sample API for Check_MK
+###This is sample GO API for Check_MK 
 
-example 
+Before you run - make sure you have created the automation user in check_mk.
+For details please refer - https://mathias-kettner.de/checkmk_wato_webapi. 
+
+> You have to use the existing TAG's defined in WATO , for  standard installation its 
+**Agent-Type - cmk-agent,snmp-only,snmp-v1,snmp-tcp,ping
+** Criticality-Tag - prod,critical,test,offline
+
+### Work in Progress, created  specifically for Terraform provider for check_mk  
+
+example
 ```
 package main
 import (

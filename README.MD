@@ -36,3 +36,7 @@ func main() {
 }
 
 ```
+## Author
+
+[junaid18183](https://github.com/junaid18183)
+

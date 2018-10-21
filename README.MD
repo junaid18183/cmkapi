@@ -1,4 +1,7 @@
-### This is sample GO API for Check_MK 1.5.x
+### cmkapi
+
+This is a Check_MK API client implementation written in go.
+It's focused on Check_MK 1.5.x and may also work with earlier versions.
 
 Before you run - make sure you have created the automation user in check_mk.
 For details please refer - https://mathias-kettner.de/checkmk_wato_webapi. 

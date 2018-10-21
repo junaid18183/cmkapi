@@ -27,19 +27,19 @@ func (c *Client) NewAPIRequest(method, APICall string, body io.Reader) (resp_bod
 	action := "?action=" + APICall
 	credentails := "&_username=" + c.User + "&_secret=" + c.Password + "&effective_attributes=1"
 	apiurl := baseurl + action + credentails
-	request, request_err := http.NewRequest("POST", apiurl, body)
-	if request_err != nil {
-		log.Fatalf("ERROR: %s", request_err)
+	request, requestErr := http.NewRequest("POST", apiurl, body)
+	if requestErr != nil {
+		log.Fatalf("ERROR: %s", requestErr)
 	}
 
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-	response, do_err := (&http.Client{}).Do(request)
-	if do_err != nil {
-		log.Fatalf("ERROR: %s", do_err)
+	response, doErr := (&http.Client{}).Do(request)
+	if doErr != nil {
+		log.Fatalf("ERROR: %s", doErr)
 	}
 	defer response.Body.Close()
-	resp_body, err := ioutil.ReadAll(response.Body)
-	return resp_body, err
+	respBody, err := ioutil.ReadAll(response.Body)
+	return respBody, err
 
 }

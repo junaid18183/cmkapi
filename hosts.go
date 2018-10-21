@@ -75,7 +75,6 @@ func (c *Client) ReadHost(host string) (*Host, error) {
 	tagCriticality := hostdetail.Result.Attributes.TagCriticality
 	ipaddress := hostdetail.Result.Attributes.Ipaddress
 	hoststruct := &Host{Attributes{alias, tagAgent, tagCriticality, ipaddress}, hostname, folder}
-	fmt.Printf("Host %s is Available in Check_MK.\n", hostname)
 	return hoststruct, nil
 }
 

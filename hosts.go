@@ -7,7 +7,6 @@ import (
 	"strings"
 )
 
-//#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) CreateHost(hostname, folder, alias, tag_agent, tag_criticality, ipaddress string) error {
 	var result StructPutResult
 	host := &Host{Attributes{alias, tag_agent, tag_criticality, ipaddress}, hostname, folder}
@@ -43,7 +42,6 @@ func (c *Client) CreateHost(hostname, folder, alias, tag_agent, tag_criticality,
 	return nil
 }
 
-//#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) ReadALLHost() error {
 	resp_body, resp_err := c.NewAPIRequest("GET", "get_all_hosts", nil)
 	if resp_err != nil {
@@ -53,7 +51,6 @@ func (c *Client) ReadALLHost() error {
 	return nil
 }
 
-//#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) ReadHost(host string) (*Host, error) {
 	var hostdetail StructGetHostResult
 	s := "request={\"hostname\": \"" + host + "\"}"
@@ -79,7 +76,6 @@ func (c *Client) ReadHost(host string) (*Host, error) {
 	return hoststruct, nil
 }
 
-//#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) DeleteHost(host string) error {
 	var result StructPutResult
 	s := "request={\"hostname\": \"" + host + "\"}"
@@ -109,7 +105,6 @@ func (c *Client) DeleteHost(host string) error {
 	return nil
 }
 
-//#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) ActivateChanges() error {
 	var result StructPutResult
 	resp_body, resp_err := c.NewAPIRequest("POST", "activate_changes", nil)
@@ -129,5 +124,3 @@ func (c *Client) ActivateChanges() error {
 	}
 	return nil
 }
-
-//#-------------------------------------------------------------------------------------------------------------------------------------------

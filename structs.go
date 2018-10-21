@@ -1,6 +1,5 @@
 package cmkapi
 
-//#-------------------------------------------------------------------------------------------------------------------------------------------
 type StructGetHostResult struct {
 	Result struct {
 		Attributes struct {
@@ -34,13 +33,11 @@ type StructGetHostResult struct {
 	ResultCode int `json:"result_code"`
 }
 
-//#-------------------------------------------------------------------------------------------------------------------------------------------
 type StructPutResult struct {
 	Result     string `json:"result"`
 	ResultCode int    `json:"result_code"`
 }
 
-//#-------------------------------------------------------------------------------------------------------------------------------------------
 type Attributes struct {
 	Alias          string `json:"alias"`
 	TagAgent       string `json:"tag_agent"`
@@ -48,11 +45,8 @@ type Attributes struct {
 	Ipaddress      string `json:"ipaddress"`
 }
 
-//#-------------------------------------------------------------------------------------------------------------------------------------------
 type Host struct {
 	Attributes `json:"attributes"`
 	Hostname   string `json:"hostname"`
 	Folder     string `json:"folder"`
 }
-
-//#-------------------------------------------------------------------------------------------------------------------------------------------

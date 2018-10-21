@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// Client holds the struct for connecting to a Check_MK instance
 type Client struct {
 	User       string
 	Password   string
@@ -15,10 +16,12 @@ type Client struct {
 	httpClient *http.Client
 }
 
+// NewClient is the skeleton for instantiating a new Check_MK connection
 func NewClient(user, password, host, sitename string) (*Client, error) {
 	return &Client{user, password, host, sitename, nil}, nil
 }
 
+// NewAPIRequest sends and receives the Check_MK webAPI
 func (c *Client) NewAPIRequest(method, APICall string, body io.Reader) (resp_body []byte, resp_error error) {
 	baseurl := "http://" + c.Host + "/" + c.Sitename + "/check_mk/webapi.py"
 	action := "?action=" + APICall

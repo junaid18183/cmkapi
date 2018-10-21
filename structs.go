@@ -1,5 +1,6 @@
 package cmkapi
 
+// StructGetHostResult holds the results of a Check_MK webAPI answer
 type StructGetHostResult struct {
 	Result struct {
 		Attributes struct {
@@ -33,11 +34,13 @@ type StructGetHostResult struct {
 	ResultCode int `json:"result_code"`
 }
 
+// StructPutResult holds the result of a Check_MK webAPI update
 type StructPutResult struct {
 	Result     string `json:"result"`
 	ResultCode int    `json:"result_code"`
 }
 
+// Attributes describes the needed/optional tags for the Check_MK webAPI
 type Attributes struct {
 	Alias          string `json:"alias"`
 	TagAgent       string `json:"tag_agent"`
@@ -45,6 +48,7 @@ type Attributes struct {
 	Ipaddress      string `json:"ipaddress"`
 }
 
+// Host holds the data for a single host
 type Host struct {
 	Attributes `json:"attributes"`
 	Hostname   string `json:"hostname"`

@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// CreateHost creates a new host
 func (c *Client) CreateHost(hostname, folder, alias, tag_agent, tag_criticality, ipaddress string) error {
 	var result StructPutResult
 	host := &Host{Attributes{alias, tag_agent, tag_criticality, ipaddress}, hostname, folder}
@@ -42,6 +43,7 @@ func (c *Client) CreateHost(hostname, folder, alias, tag_agent, tag_criticality,
 	return nil
 }
 
+// ReadALLHost returns all hosts
 func (c *Client) ReadALLHost() error {
 	resp_body, resp_err := c.NewAPIRequest("GET", "get_all_hosts", nil)
 	if resp_err != nil {
@@ -51,6 +53,7 @@ func (c *Client) ReadALLHost() error {
 	return nil
 }
 
+// ReadHost returns a single host
 func (c *Client) ReadHost(host string) (*Host, error) {
 	var hostdetail StructGetHostResult
 	s := "request={\"hostname\": \"" + host + "\"}"
@@ -76,6 +79,7 @@ func (c *Client) ReadHost(host string) (*Host, error) {
 	return hoststruct, nil
 }
 
+// DeleteHost deletes a host
 func (c *Client) DeleteHost(host string) error {
 	var result StructPutResult
 	s := "request={\"hostname\": \"" + host + "\"}"
@@ -105,6 +109,7 @@ func (c *Client) DeleteHost(host string) error {
 	return nil
 }
 
+// ActivateChanges activates the pending changes done to Check_MK after create/update/delete
 func (c *Client) ActivateChanges() error {
 	var result StructPutResult
 	resp_body, resp_err := c.NewAPIRequest("POST", "activate_changes", nil)

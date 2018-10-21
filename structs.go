@@ -17,7 +17,7 @@ type StructGetHostResult struct {
 			TagCriticality    string        `json:"tag_criticality"`
 			Site              string        `json:"site"`
 			TagAddressFamily  string        `json:"tag_address_family"`
-			Contactgroups     []interface{} `json:"contactgroups"`
+			Contactgroups     contactGroups `json:"contactgroups"`
 			NetworkScanResult struct {
 				Start  interface{} `json:"start"`
 				State  interface{} `json:"state"`
@@ -32,6 +32,15 @@ type StructGetHostResult struct {
 		Path     string `json:"path"`
 	} `json:"result"`
 	ResultCode int `json:"result_code"`
+}
+
+// Hosts contactgroups settings
+type contactGroups struct {
+	UseForServices bool
+	RecursePerms   bool
+	RecurseUse     bool
+	Use            bool
+	Groups         []string
 }
 
 // StructPutResult holds the result of a Check_MK webAPI update

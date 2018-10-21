@@ -1,4 +1,4 @@
-###This is sample GO API for Check_MK 
+### This is sample GO API for Check_MK 1.5.x
 
 Before you run - make sure you have created the automation user in check_mk.
 For details please refer - https://mathias-kettner.de/checkmk_wato_webapi. 

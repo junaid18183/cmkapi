@@ -1,127 +1,133 @@
 package cmkapi
 
 import (
-    "fmt"
-    "strings"
-    "encoding/json"
-    "errors"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"strings"
 )
+
 //#-------------------------------------------------------------------------------------------------------------------------------------------
-func (c *Client) CreateHost(hostname, folder, alias,tag_agent,tag_criticality,ipaddress string) error {
+func (c *Client) CreateHost(hostname, folder, alias, tag_agent, tag_criticality, ipaddress string) error {
 	var result StructPutResult
-	host := &Host{Attributes {alias,tag_agent,tag_criticality,ipaddress},hostname, folder }
+	host := &Host{Attributes{alias, tag_agent, tag_criticality, ipaddress}, hostname, folder}
 	h, marshal_err := json.Marshal(host)
-    	if marshal_err != nil {
-        	fmt.Printf("Error Creating the Host Struct: %s\n", marshal_err)
-        	return marshal_err
-    	}
+	if marshal_err != nil {
+		fmt.Printf("Error Creating the Host Struct: %s\n", marshal_err)
+		return marshal_err
+	}
 	s := "request=" + string(h)
 	body := strings.NewReader(s)
-	resp_body, resp_err := c.NewAPIRequest("POST","add_host",body)
-        if resp_err != nil {
+	resp_body, resp_err := c.NewAPIRequest("POST", "add_host", body)
+	if resp_err != nil {
 		fmt.Printf("API Request for add_host failed. Error: %s\n", resp_err)
 		return resp_err
 	}
 	resp_unmarshal_err := json.Unmarshal(resp_body, &result)
-        if resp_unmarshal_err != nil {
+	if resp_unmarshal_err != nil {
 		fmt.Printf("Error Decoding the API response. Error: %s\n", resp_unmarshal_err)
 		return resp_unmarshal_err
 	}
-        resp_code := result.ResultCode
-        if resp_code != 0 {
-                fmt.Printf("API Response Failed. Error:%s\n", result.Result)
-                return errors.New("API Response Failed")
+	resp_code := result.ResultCode
+	if resp_code != 0 {
+		fmt.Printf("API Response Failed. Error:%s\n", result.Result)
+		return errors.New("API Response Failed")
 	}
 	//Add host is sucssfull , now Call activate_changes
-        status:=c.ActivateChanges()
-        if status != nil {
+	status := c.ActivateChanges()
+	if status != nil {
 		fmt.Printf("Activate Change got Failed, %s\n", status)
-                return errors.New("Activate Change got Failed, status")
-	}                          
-        fmt.Printf("Host %s is added Successfully \n",host.Hostname)
+		return errors.New("Activate Change got Failed, status")
+	}
+	fmt.Printf("Host %s is added Successfully \n", host.Hostname)
 	return nil
 }
+
 //#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) ReadALLHost() error {
-	resp_body, resp_err := c.NewAPIRequest("GET","get_all_hosts",nil)
+	resp_body, resp_err := c.NewAPIRequest("GET", "get_all_hosts", nil)
 	if resp_err != nil {
-        	return resp_err
-        }
-        fmt.Printf("%s",resp_body)
-        return nil
+		return resp_err
+	}
+	fmt.Printf("%s", resp_body)
+	return nil
 }
+
 //#-------------------------------------------------------------------------------------------------------------------------------------------
-func (c *Client) ReadHost(host string) (*Host,error) {
-        var hostdetail StructGetHostResult
+func (c *Client) ReadHost(host string) (*Host, error) {
+	var hostdetail StructGetHostResult
 	s := "request={\"hostname\": \"" + host + "\"}"
-        body := strings.NewReader(s)
-        resp_body, resp_err := c.NewAPIRequest("POST","get_host",body)
-        if resp_err != nil {
-                fmt.Printf("API Request for get_host failed. Error: %s\n", resp_err)
-                return nil,resp_err
-        }
-        resp_unmarshal_err := json.Unmarshal(resp_body, &hostdetail)
-        if resp_unmarshal_err != nil {
-                fmt.Printf("Error Decoding the API response. Error: %s\n", resp_unmarshal_err)
-                return nil,resp_unmarshal_err
-        }
+	body := strings.NewReader(s)
+	resp_body, resp_err := c.NewAPIRequest("POST", "get_host", body)
+	if resp_err != nil {
+		fmt.Printf("API Request for get_host failed. Error: %s\n", resp_err)
+		return nil, resp_err
+	}
+	resp_unmarshal_err := json.Unmarshal(resp_body, &hostdetail)
+	if resp_unmarshal_err != nil {
+		fmt.Printf("Error Decoding the API response. Error: %s\n", resp_unmarshal_err)
+		return nil, resp_unmarshal_err
+	}
 	hostname := hostdetail.Result.Hostname
- 	folder := hostdetail.Result.Path
+	folder := hostdetail.Result.Path
 	alias := hostdetail.Result.Attributes.Alias
 	tag_agent := hostdetail.Result.Attributes.TagAgent
 	tag_criticality := hostdetail.Result.Attributes.TagCriticality
 	ipaddress := hostdetail.Result.Attributes.Ipaddress
-	hoststruct := &Host{Attributes {alias,tag_agent,tag_criticality,ipaddress},hostname, folder }
-	fmt.Printf("Host %s is Available in Check_MK.\n",hostname)
-        return hoststruct,nil
+	hoststruct := &Host{Attributes{alias, tag_agent, tag_criticality, ipaddress}, hostname, folder}
+	fmt.Printf("Host %s is Available in Check_MK.\n", hostname)
+	return hoststruct, nil
 }
+
 //#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) DeleteHost(host string) error {
-        var result StructPutResult
-		s := "request={\"hostname\": \"" + host + "\"}"
-        body := strings.NewReader(s)
-        resp_body, resp_err := c.NewAPIRequest("POST","delete_host",body)
-        if resp_err != nil {
-                fmt.Printf("API Request for delete_host failed. Error: %s\n", resp_err)
-                return resp_err
-        }
-        resp_unmarshal_err := json.Unmarshal(resp_body, &result)
-        if resp_unmarshal_err != nil {
-                fmt.Printf("Error Decoding the API response. Error: %s\n", resp_unmarshal_err)
-                return resp_unmarshal_err
-        }
-        resp_code := result.ResultCode
-        if resp_code != 0 {
-                fmt.Printf("API Response Failed. Error:%s\n", result.Result)
-                return errors.New("API Response Failed")
-        }
-        //Delete host is sucssfull , now Call activate_changes
-        status:=c.ActivateChanges()
-        if status != nil {
-                fmt.Printf("Activate Change got Failed, %s\n", status)
-                return errors.New("Activate Change got Failed, status")
-        }
-        fmt.Printf("Host %s is deleted Successfully \n",host)
-        return nil
+	var result StructPutResult
+	s := "request={\"hostname\": \"" + host + "\"}"
+	body := strings.NewReader(s)
+	resp_body, resp_err := c.NewAPIRequest("POST", "delete_host", body)
+	if resp_err != nil {
+		fmt.Printf("API Request for delete_host failed. Error: %s\n", resp_err)
+		return resp_err
+	}
+	resp_unmarshal_err := json.Unmarshal(resp_body, &result)
+	if resp_unmarshal_err != nil {
+		fmt.Printf("Error Decoding the API response. Error: %s\n", resp_unmarshal_err)
+		return resp_unmarshal_err
+	}
+	resp_code := result.ResultCode
+	if resp_code != 0 {
+		fmt.Printf("API Response Failed. Error:%s\n", result.Result)
+		return errors.New("API Response Failed")
+	}
+	//Delete host is sucssfull , now Call activate_changes
+	status := c.ActivateChanges()
+	if status != nil {
+		fmt.Printf("Activate Change got Failed, %s\n", status)
+		return errors.New("Activate Change got Failed, status")
+	}
+	fmt.Printf("Host %s is deleted Successfully \n", host)
+	return nil
 }
+
 //#-------------------------------------------------------------------------------------------------------------------------------------------
 func (c *Client) ActivateChanges() error {
 	var result StructPutResult
-        resp_body, resp_err := c.NewAPIRequest("POST","activate_changes",nil)
-        if resp_err != nil {
-                fmt.Printf("API Request for activate_changes failed. Error: %s\n", resp_err)
-                return resp_err
-        }
-        resp_unmarshal_err := json.Unmarshal(resp_body, &result)
-        if resp_unmarshal_err != nil {
-                fmt.Printf("Error Decoding the API response. Error: %s\n", resp_unmarshal_err)
-                return resp_unmarshal_err
-        }
-        resp_code := result.ResultCode
-        if resp_code != 0 {
-                fmt.Printf("API Response Failed. Error:%s\n", result.Result)
-                return errors.New("API Response Failed")
-        }
-        return nil
+	resp_body, resp_err := c.NewAPIRequest("POST", "activate_changes", nil)
+	if resp_err != nil {
+		fmt.Printf("API Request for activate_changes failed. Error: %s\n", resp_err)
+		return resp_err
+	}
+	resp_unmarshal_err := json.Unmarshal(resp_body, &result)
+	if resp_unmarshal_err != nil {
+		fmt.Printf("Error Decoding the API response. Error: %s\n", resp_unmarshal_err)
+		return resp_unmarshal_err
+	}
+	resp_code := result.ResultCode
+	if resp_code != 0 {
+		fmt.Printf("API Response Failed. Error:%s\n", result.Result)
+		return errors.New("API Response Failed")
+	}
+	return nil
 }
+
 //#-------------------------------------------------------------------------------------------------------------------------------------------

@@ -36,11 +36,11 @@ type StructGetHostResult struct {
 
 // Hosts contactgroups settings
 type contactGroups struct {
-	UseForServices bool
-	RecursePerms   bool
-	RecurseUse     bool
-	Use            bool
-	Groups         []string
+	UseForServices bool     `json:"use_for_services"`
+	RecursePerms   bool     `json:"recurse_perms"`
+	RecurseUse     bool     `json:"recurse_use"`
+	Use            bool     `json:"use"`
+	Groups         []string `json:"groups"`
 }
 
 // StructPutResult holds the result of a Check_MK webAPI update

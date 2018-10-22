@@ -24,7 +24,8 @@ func NewClient(user, password, host string) (*Client, error) {
 func (c *Client) NewAPIRequest(method, APICall string, body io.Reader) (resp_body []byte, resp_error error) {
 	baseurl := c.Host
 	action := "?action=" + APICall
-	credentails := "&_username=" + c.User + "&_secret=" + c.Password + "&effective_attributes=1"
+	credentails := "&_username=" + c.User + "&_secret=" + c.Password
+	//credentails := "&_username=" + c.User + "&_secret=" + c.Password + "&effective_attributes=1"
 	apiurl := baseurl + action + credentails
 	request, requestErr := http.NewRequest("POST", apiurl, body)
 	if requestErr != nil {

@@ -30,8 +30,7 @@ func (c *Client) CreateHost(hostname, folder, alias, tag_agent, tag_criticality,
 	}
 	respCode := result.ResultCode
 	if respCode != 0 {
-		fmt.Printf("API Response Failed. Error:%s\n", result.Result)
-		return errors.New("API Response Failed")
+		return errors.New("API Response Failed: " + result.Result)
 	}
 	//Add host is sucssfull , now Call activate_changes
 	status := c.ActivateChanges()

@@ -32,13 +32,12 @@ func (c *Client) CreateHost(hostname, folder, alias, tag_agent, tag_criticality,
 	if respCode != 0 {
 		return errors.New("API Response Failed: " + result.Result)
 	}
-	//Add host is sucssfull , now Call activate_changes
-	status := c.ActivateChanges()
-	if status != nil {
-		fmt.Printf("Activate Change got Failed, %s\n", status)
-		return errors.New("Activate Change got Failed, status")
-	}
-	fmt.Printf("Host %s is added Successfully \n", host.Hostname)
+	//	//Add host is sucssfull , now Call activate_changes
+	//	status := c.ActivateChanges()
+	//	if status != nil {
+	//		return errors.New("Activating Change(s) Failed: " + fmt.Sprintf("%s", status))
+	//	}
+	//	fmt.Printf("Host %s is added Successfully \n", host.Hostname)
 	return nil
 }
 
@@ -101,7 +100,8 @@ func (c *Client) DeleteHost(host string) error {
 	status := c.ActivateChanges()
 	if status != nil {
 		fmt.Printf("Activate Change got Failed, %s\n", status)
-		return errors.New("Activate Change got Failed, status")
+
+		return errors.New("Activating Change(s) Failed: " + fmt.Sprintf("%s", status))
 	}
 	fmt.Printf("Host %s is deleted Successfully \n", host)
 	return nil
@@ -117,13 +117,12 @@ func (c *Client) ActivateChanges() error {
 	}
 	respUnmarshalErr := json.Unmarshal(respBody, &result)
 	if respUnmarshalErr != nil {
-		fmt.Printf("Error Decoding the API response. Error: %s\n", respUnmarshalErr)
+		//fmt.Printf("Error Decoding the API response. Error: %s\n", respUnmarshalErr)
 		return respUnmarshalErr
 	}
 	respCode := result.ResultCode
 	if respCode != 0 {
-		fmt.Printf("API Response Failed. Error:%s\n", result.Result)
-		return errors.New("API Response Failed")
+		return errors.New("API Response Failed: " + result.Result)
 	}
 	return nil
 }

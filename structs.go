@@ -43,8 +43,37 @@ type contactGroups struct {
 	Groups         []string `json:"groups"`
 }
 
-// StructPutResult holds the result of a Check_MK webAPI update
-type StructPutResult struct {
+// ActivateResult holds the result of a Check_MK webAPI update
+type ActivateResult struct {
+	Result     activateResultSites `json:"result"`
+	ResultCode int                 `json:"result_code"`
+}
+
+type activateResultSites struct {
+	Sites map[string]activateResultSite `json:"sites"`
+}
+
+type activateResultSite struct {
+	TimeUpdated      float64                `json:"_time_updated"`
+	StatusDetails    string                 `json:"_status_details"`
+	Phase            string                 `json:"_phase"`
+	StatusText       string                 `json:"_status_text"`
+	PID              int                    `json:"_pid"`
+	State            string                 `json:"_state"`
+	TimeEnded        float64                `json:"_time_ended"`
+	ExpectedDuration float64                `json:"_expected_duration"`
+	TimeStarted      float64                `json:"_time_started"`
+	SiteID           string                 `json:"_site_id"`
+	Warnings         activateResultWarnings `json:"_warnings"`
+}
+
+type activateResultWarnings struct {
+	CACertificate []string `json:"ca-certificates"`
+	CheckMK       []string `json:"check_mk"`
+}
+
+// CheckMKException holds exceptions thrown by CheckMK
+type CheckMKException struct {
 	Result     string `json:"result"`
 	ResultCode int    `json:"result_code"`
 }

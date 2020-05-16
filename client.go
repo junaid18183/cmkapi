@@ -1,46 +1,45 @@
 package cmkapi
 
 import (
-"net/http" 
-"io"
-"io/ioutil"
-"log"
+	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
 )
 
+// Client holds the struct for connecting to a Check_MK instance
 type Client struct {
-        User     string
-        Password   string
-        Host    string
-        Sitename string
-        httpClient         *http.Client
+	User       string
+	Password   string
+	Host       string
+	httpClient *http.Client
 }
 
-//#-------------------------------------------------------------------------------------------------------------------------------------------
-// func NewClient
-func NewClient(user, password, host,sitename string) (*Client, error) {
-        return &Client{user, password,host,sitename, nil}, nil
+// NewClient is the skeleton for instantiating a new Check_MK connection
+func NewClient(user, password, host string) (*Client, error) {
+	return &Client{user, password, host, nil}, nil
 }
 
-//#-------------------------------------------------------------------------------------------------------------------------------------------
-func (c *Client) NewAPIRequest(method,APICall string,body io.Reader) (resp_body []byte, resp_error error) {
-        baseurl := "http://" + c.Host + "/" + c.Sitename + "/check_mk/webapi.py"
-        action := "?action=" + APICall
-        credentails := "&_username=" + c.User + "&_secret=" + c.Password + "&effective_attributes=1"
-        apiurl := baseurl + action + credentails
-	request, request_err := http.NewRequest("POST",apiurl,body)
-        if request_err != nil {
-                log.Fatalf("ERROR: %s", request_err)
-        }
+// NewAPIRequest sends and receives the Check_MK webAPI
+func (c *Client) NewAPIRequest(method, APICall string, body io.Reader) (resp_body []byte, resp_error error) {
+	baseurl := c.Host
+	action := "?action=" + APICall
+	//credentails := "&_username=" + c.User + "&_secret=" + c.Password
+	credentials := "&_username=" + c.User + "&_secret=" + c.Password + "&effective_attributes=1"
+	apiurl := baseurl + action + credentials
+	request, requestErr := http.NewRequest("POST", apiurl, body)
+	if requestErr != nil {
+		log.Fatalf("ERROR: %s", requestErr)
+	}
 
-        request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-        response, do_err := (&http.Client{}).Do(request)
-        if do_err != nil {
-                log.Fatalf("ERROR: %s", do_err)
-        }
-        defer response.Body.Close()
-        resp_body, err := ioutil.ReadAll(response.Body)
-	return resp_body, err
+	response, doErr := (&http.Client{}).Do(request)
+	if doErr != nil {
+		log.Fatalf("ERROR: %s", doErr)
+	}
+	defer response.Body.Close()
+	respBody, err := ioutil.ReadAll(response.Body)
+	return respBody, err
 
 }
-//#-------------------------------------------------------------------------------------------------------------------------------------------

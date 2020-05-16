@@ -1,0 +1,5 @@
+.settings/
+.vscode/
+*~
+scratchpad.txt
+examples/*
